@@ -6,17 +6,19 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNullElse;
 
 import com.github.jaguililla.appointments.domain.model.Appointment;
+import com.github.jaguililla.appointments.domain.model.User;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public final class Service {
+public final class AppointmentsService {
     private final AppointmentsRepository appointmentsRepository;
     private final UsersRepository usersRepository;
     private final AppointmentsNotifier appointmentsNotifier;
 
-    public Service(
+    public AppointmentsService(
         final AppointmentsRepository appointmentsRepository,
         final UsersRepository usersRepository,
         final AppointmentsNotifier appointmentsNotifier
@@ -37,6 +39,11 @@ public final class Service {
             throw new IllegalStateException("Error creating appointment");
 
         return fullAppointment;
+    }
+
+    public User create(final User appointment) {
+        usersRepository.insert(appointment);
+        return appointment;
     }
 
     public boolean delete(final UUID id) {

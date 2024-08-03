@@ -1,4 +1,4 @@
-package com.github.jaguililla.appointments.adapters;
+package com.github.jaguililla.appointments.output.notifiers;
 
 import com.github.jaguililla.appointments.domain.AppointmentsNotifier;
 import com.github.jaguililla.appointments.domain.Event;
@@ -7,16 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
-public class KafkaAppointmentsNotifier implements AppointmentsNotifier {
+public class KafkaTemplateAppointmentsNotifier implements AppointmentsNotifier {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaAppointmentsNotifier.class);
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(KafkaTemplateAppointmentsNotifier.class);
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final String notifierTopic;
     private final String createMessage;
     private final String deleteMessage;
 
-    public KafkaAppointmentsNotifier(
+    public KafkaTemplateAppointmentsNotifier(
         final KafkaTemplate<String, String> kafkaTemplate,
         final String notifierTopic,
         final String createMessage,

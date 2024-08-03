@@ -1,5 +1,6 @@
-package com.github.jaguililla.appointments.adapters;
+package com.github.jaguililla.appointments.output.repositories;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 
 import com.github.jaguililla.appointments.domain.AppointmentsRepository;
@@ -14,9 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-public class SqlAppointmentsRepository implements AppointmentsRepository {
+public class JdbcTemplateAppointmentsRepository implements AppointmentsRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SqlAppointmentsRepository.class);
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(JdbcTemplateAppointmentsRepository.class);
 
     private static Appointment appointmentDataMapper(
         final ResultSet row, final int index
@@ -33,15 +35,15 @@ public class SqlAppointmentsRepository implements AppointmentsRepository {
 
     private final NamedParameterJdbcTemplate template;
 
-    public SqlAppointmentsRepository(final DataSource dataSource) {
+    public JdbcTemplateAppointmentsRepository(final DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
     @Override
     public boolean insert(final Appointment appointment) {
+        requireNonNull(appointment, "appointment cannot be null");
         LOGGER.debug("--> Creating appointment: {}", appointment);
 
-        // TODO Checks
         // TODO Transaction
         final var parameters = Map.of(
             "id", appointment.id(),
@@ -65,9 +67,9 @@ public class SqlAppointmentsRepository implements AppointmentsRepository {
 
     @Override
     public boolean delete(final UUID id) {
+        requireNonNull(id, "id cannot be null");
         LOGGER.debug("--> Deleting aid: {}", id);
 
-        // TODO Checks
         // TODO Transaction
         final var parameters = Map.of("id", id);
         final var usersCount =
@@ -79,6 +81,7 @@ public class SqlAppointmentsRepository implements AppointmentsRepository {
 
     @Override
     public Appointment get(final UUID id) {
+        requireNonNull(id, "id cannot be null");
         LOGGER.debug("--> Reading aid: {}", id);
 
         final var appointments = template.query(
@@ -91,7 +94,7 @@ public class SqlAppointmentsRepository implements AppointmentsRepository {
             where a.id = :id
             """,
             Map.of("id", id),
-            SqlAppointmentsRepository::appointmentDataMapper
+            JdbcTemplateAppointmentsRepository::appointmentDataMapper
         );
 
         final var x = appointments
@@ -118,7 +121,7 @@ public class SqlAppointmentsRepository implements AppointmentsRepository {
               left join AppointmentsUsers au on a.id = au.appointmentId
               left join Users u on au.userId = u.id
             """,
-            SqlAppointmentsRepository::appointmentDataMapper
+            JdbcTemplateAppointmentsRepository::appointmentDataMapper
         );
 
         final var groupedAppointments = groupAppointments(appointments);
@@ -127,6 +130,7 @@ public class SqlAppointmentsRepository implements AppointmentsRepository {
     }
 
     private List<Appointment> groupAppointments(final List<Appointment> appointments) {
+        requireNonNull(appointments, "appointments cannot be null");
         return appointments
             .stream()
             .collect(groupingBy(Appointment::id))
