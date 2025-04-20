@@ -1,4 +1,4 @@
-package com.github.jaguililla.appointments.output.repositories;
+package com.github.jaguililla.appointments.repositories;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
@@ -6,15 +6,18 @@ import static java.util.stream.Collectors.groupingBy;
 import com.github.jaguililla.appointments.domain.AppointmentsRepository;
 import com.github.jaguililla.appointments.domain.model.Appointment;
 import com.github.jaguililla.appointments.domain.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class JdbcTemplateAppointmentsRepository implements AppointmentsRepository {
 
     private static final Logger LOGGER =
@@ -40,11 +43,11 @@ public class JdbcTemplateAppointmentsRepository implements AppointmentsRepositor
     }
 
     @Override
+    @Transactional
     public boolean insert(final Appointment appointment) {
         requireNonNull(appointment, "appointment cannot be null");
         LOGGER.debug("--> Creating appointment: {}", appointment);
 
-        // TODO Transaction
         final var parameters = Map.of(
             "id", appointment.id(),
             "startTimestamp", appointment.start(),
@@ -66,11 +69,11 @@ public class JdbcTemplateAppointmentsRepository implements AppointmentsRepositor
     }
 
     @Override
+    @Transactional
     public boolean delete(final UUID id) {
         requireNonNull(id, "id cannot be null");
         LOGGER.debug("--> Deleting aid: {}", id);
 
-        // TODO Transaction
         final var parameters = Map.of("id", id);
         final var usersCount =
             template.update("delete from AppointmentsUsers where appointmentId = :id", parameters);

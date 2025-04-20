@@ -1,4 +1,4 @@
-package com.github.jaguililla.appointments.input.controllers;
+package com.github.jaguililla.appointments.controllers;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -7,12 +7,11 @@ import com.github.jaguililla.appointments.http.controllers.AppointmentsApi;
 import com.github.jaguililla.appointments.http.controllers.messages.AppointmentRequest;
 import com.github.jaguililla.appointments.http.controllers.messages.AppointmentResponse;
 import com.github.jaguililla.appointments.http.controllers.messages.IdResponse;
-
-import java.util.List;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 final class AppointmentsController extends BaseController implements AppointmentsApi {
@@ -37,7 +36,7 @@ final class AppointmentsController extends BaseController implements Appointment
         final var createdAppointment = appointmentsService.create(appointment, users);
 
         final var responseAppointment = AppointmentsMapper.appointmentResponse(createdAppointment);
-        return ResponseEntity.ofNullable(responseAppointment);
+        return ResponseEntity.status(201).body(responseAppointment);
     }
 
     @Override

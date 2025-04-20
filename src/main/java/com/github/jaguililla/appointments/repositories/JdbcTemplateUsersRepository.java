@@ -1,19 +1,24 @@
-package com.github.jaguililla.appointments.output.repositories;
-
-import com.github.jaguililla.appointments.domain.UsersRepository;
-import com.github.jaguililla.appointments.domain.model.User;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+package com.github.jaguililla.appointments.repositories;
 
 import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 
-public final class JdbcTemplateUsersRepository implements UsersRepository {
+import com.github.jaguililla.appointments.domain.UsersRepository;
+import com.github.jaguililla.appointments.domain.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class JdbcTemplateUsersRepository implements UsersRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcTemplateUsersRepository.class);
 
